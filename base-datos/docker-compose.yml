@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  db:
+    build: .
+    container_name: mariadb_uq
+    environment:
+      MYSQL_ROOT_PASSWORD: jero123;
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - /mnt/raid:/var/lib/mysql
+
+volumes:
+  db_data:

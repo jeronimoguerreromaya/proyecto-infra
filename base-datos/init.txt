@@ -1,0 +1,78 @@
+CREATE DATABASE IF NOT EXISTS marketplace;
+USE marketplace;
+
+-- ==========================================
+-- TABLA: vendedores (publican productos)
+-- ==========================================
+CREATE TABLE vendedores (
+    id_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+    documento VARCHAR(45) NOT NULL UNIQUE,
+    nombre VARCHAR(45) NOT NULL,
+    telefono VARCHAR(45),
+    email VARCHAR(45)
+);
+
+-- ==========================================
+-- TABLA: clientes (compradores)
+-- ==========================================
+CREATE TABLE clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    documento VARCHAR(45) NOT NULL UNIQUE,
+    nombre VARCHAR(45) NOT NULL,
+    telefono VARCHAR(45),
+    email VARCHAR(45),
+    direccion VARCHAR(45)
+);
+
+-- ==========================================
+-- TABLA: productos (publicados por vendedores)
+-- ==========================================
+CREATE TABLE productos (
+    id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(45) NOT NULL,
+    descripcion VARCHAR(45),
+    precio INT NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    vendedor_id INT NOT NULL,
+
+    FOREIGN KEY (vendedor_id)
+        REFERENCES vendedores(id_vendedor)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- ==========================================
+-- TABLA: ventas (orden/pedido)
+-- ==========================================
+CREATE TABLE ventas (
+    id_venta INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    total INT NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (cliente_id)
+        REFERENCES clientes(id_cliente)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- ==========================================
+-- TABLA: carritos (detalle de la venta)
+-- ==========================================
+CREATE TABLE carritos (
+    id_carrito INT AUTO_INCREMENT PRIMARY KEY,
+    venta_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    cantidad INT NOT NULL,
+    sub_total INT NOT NULL,
+
+    FOREIGN KEY (venta_id)
+        REFERENCES ventas(id_venta)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (producto_id)
+        REFERENCES productos(id_producto)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
